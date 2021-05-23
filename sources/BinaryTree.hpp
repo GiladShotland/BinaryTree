@@ -9,7 +9,7 @@ namespace ariel
         struct Node
         {
             T value;
-            Node *right, *left;
+            Node *right, *left , *father;
             Node(const T &val) : value(val) {}
         };
         Node root;
@@ -26,10 +26,32 @@ namespace ariel
             private:
                 preorder_iterator(Node* ptr = nullptr):current_node(ptr){}
                 T& operator*() const{}
-                T* operator->()const{}
-                  
-
-
+                preorder_iterator& operator++() {} //prefox
+                preorder_iterator operator++(int){} //postfix
+                bool operator==(const preorder_iterator& it) const{}
+                bool operator!=(const preorder_iterator& it) const{}
+        };
+        class inorder_iterator {
+            private:
+                Node* current_node;
+            private:
+                inorder_iterator(Node* ptr = nullptr):current_node(ptr){}
+                T& operator*() const{}
+                inorder_iterator& operator++() {} //prefox
+                inorder_iterator operator++(int){} //postfix
+                bool operator==(const inorder_iterator& it) const{}
+                bool operator!=(const inorder_iterator& it) const{}
+        };
+        class postorder_iterator {
+            private:
+                Node* current_node;
+            private:
+                postorder_iterator(Node* ptr = nullptr):current_node(ptr){}
+                T& operator*() const{}
+                postorder_iterator& operator++() {} //prefox
+                postorder_iterator operator++(int){} //postfix
+                bool operator==(const postorder_iterator& it) const{}
+                bool operator!=(const postorder_iterator& it) const{}
         };
     
     };
