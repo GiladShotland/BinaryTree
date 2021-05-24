@@ -13,11 +13,11 @@ namespace ariel
             Node *right, *left, *father;
             Node(const T &val) : value(val) {}
         };
-        Node root;
+        Node *root; //member of the tree
 
     public:
         BinaryTree(){
-            this->root = NULL;
+            this->root = nullptr;
         }
         ~BinaryTree() {}
         friend std::ostream &operator<<(std::ostream &stream, const BinaryTree<T> &tree){return stream;}
