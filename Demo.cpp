@@ -14,9 +14,11 @@ using namespace std;
 #include "BinaryTree.hpp"
 using namespace ariel;
 
-int main() {
+int main()
+{
   BinaryTree<int> tree_of_ints;
   tree_of_ints.add_root(1);
-  tree_of_ints.add_right(1,2);
-  tree_of_ints.add_right(1,4);
+   tree_of_ints.add_right(1,2);
+   tree_of_ints.add_right(2,3);
+   
 }
