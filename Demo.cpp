@@ -16,9 +16,7 @@ using namespace ariel;
 
 int main()
 {
-  BinaryTree<int> tree_of_ints;
-  tree_of_ints.add_root(1);
-   tree_of_ints.add_right(1,2);
-   tree_of_ints.add_right(2,3);
-   
+ BinaryTree<bool> t_bool;
+ bool a = (t_bool.begin_postorder() == t_bool.end_postorder());
+ std::cout<<a << std::endl;
 }

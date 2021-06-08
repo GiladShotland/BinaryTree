@@ -28,14 +28,14 @@ namespace ariel
         Node *root;
 
     public:
-        BinaryTree() : root(nullptr) {}
+        BinaryTree() : root(nullptr) {
+            
+        }
         friend std::ostream &operator<<(std::ostream &stream, const BinaryTree<T> &tree) { return stream; }
         class InorderIterator
         {
         private:
             std::stack<Node *> stk;
-
-        protected:
             Node *current;
 
         /*Ideas to iterators algorithms - TechDose channel at YouTube
@@ -50,11 +50,8 @@ namespace ariel
                     current = current->left;
                 }
                 if (!stk.empty())
-                    current = stk.top(); 
-                else
-                {
-                    current = nullptr;
-                }
+                    {current = stk.top();} 
+                
             }
 
             T *operator->() const
@@ -89,7 +86,7 @@ namespace ariel
             }
             InorderIterator operator++(int)
             {
-                InorderIterator now = *this;
+                const InorderIterator now = *this;
                 ++*this;
                 return now;
             }
@@ -113,21 +110,69 @@ namespace ariel
         {
             return InorderIterator();
         }
+        class PreorderIterator{
+            private:
+            std::stack<Node *>stk;
+            Node* current;
+            public:
+            PreorderIterator(Node *root = nullptr) :current(root) {
+                if(current){
+                    if(current->right) {stk.push(current->right);}
+                    if(current->left) {stk.push(current->left);}
+                }
+            }
+            PreorderIterator &operator++(){
+                if(stk.empty()){this->current = nullptr;
+                return *this;
+                }
+                current = stk.top();
+                stk.pop();
+                if(current->right){stk.push(current->right);}
+                if(current->left){stk.push(current->left);}
+                return *this;
+            }
+            PreorderIterator operator++(int){
+                const PreorderIterator now = *this;
+                ++*this;
+                return now;
+            }
+            T &operator*() const {
+                return this->current->value;
+            }
+            bool operator==(const PreorderIterator &other) const
+            {
+                return current == other.current;
+            }
+            bool operator!=(const PreorderIterator &other) const
+            {
+                return current != other.current;
+            }
+            Node *get_current(){
+                return current;
+            }
+        };
+        PreorderIterator begin_preorder(){
+            return PreorderIterator(root);
+        }
+        PreorderIterator end_preorder(){
+            return PreorderIterator();
+        }
         class PostorderIterator
         {
         private:
             std::stack<Node *> first_stk, second_stk;
-
+            Node *current;
        
             
 
         public:
-            Node *current;
+            
             PostorderIterator() : current(nullptr) {}
-            PostorderIterator(Node *root)
+            PostorderIterator(Node *root )
             {
                 if (root)
                 {
+
                     first_stk.push(root);
                     Node *temp = root;
                     while (!first_stk.empty())
@@ -147,6 +192,12 @@ namespace ariel
                     
                     this->current = second_stk.top();
                 }
+                else{
+                    current = nullptr;
+                }
+                
+                
+                
             }
             T &operator*() const
             {
@@ -176,7 +227,7 @@ namespace ariel
             }
             bool operator==(const PostorderIterator &other) const
             {
-                return this->current == other->current;
+                return current == other.current;
             }
             bool operator!=(const PostorderIterator &other) const
             {
@@ -190,16 +241,17 @@ namespace ariel
         };
         PostorderIterator begin_postorder()
         {
+            
             return PostorderIterator(root);
         }
         PostorderIterator end_postorder()
         {
             return PostorderIterator();
         }
-        Node *first_node(const T &val)
+        Node *find(const T &val)
         {
             
-            for (auto it = begin_inorder(); it != end_inorder(); ++it)
+            for (auto it = begin_postorder(); it != end_postorder(); ++it)
             {
                  
                 if (*it == val)
@@ -225,7 +277,7 @@ namespace ariel
             {
                 throw std::invalid_argument("tree is empty, add a root first");
             }
-            Node *place = first_node(parent);
+            Node *place = find(parent);
             if (place)
             {
                 
@@ -248,7 +300,7 @@ namespace ariel
             {
                 throw std::invalid_argument("tree is empty, add a root first");
             }
-            Node *place = first_node(parent);
+            Node *place = find(parent);
             
             if (place)
             {
@@ -264,6 +316,48 @@ namespace ariel
             }
             throw std::invalid_argument("no such elemnt in the tree!");
         }
+         void copy_tree(Node *root, const Node *copy) {
+             if (copy->right) {
+               root->right = new Node(copy->right->value);
+                copy_tree(root->right, copy->right);
+            }
+            if (copy->left) {
+                root->left = new Node(copy->left->value);
+                copy_tree(root->left, copy->left);
+            }
+           
+        }
+         BinaryTree(const BinaryTree &tree) { 
+            if (tree.root) {
+                this->root = new Node(tree.root->value);
+                copy_tree(root, tree.root);
+            }
+        }
+        BinaryTree& operator=(BinaryTree<T>&& tree) noexcept {
+            if (root){ delete root;}
+            root  = tree.root;
+            tree.root = nullptr;
+            return *this;
+        }
+
+        BinaryTree(BinaryTree &&tree)  noexcept {
+            this->root = tree.root;
+            tree.root = nullptr;
+        }
+        BinaryTree &operator=(const BinaryTree<T> &tree) {
+            if (root) {
+                delete root;
+            }
+            if (this == &tree) {
+                return *this;
+            }
+            
+            if (tree.root) {
+                root = new Node{tree.root->value};
+                copy_tree(root, tree.root);
+            }
+            return *this;
+        }
         ~BinaryTree()
         {
             
@@ -274,6 +368,12 @@ namespace ariel
                     delete it.get_current();
                 }
             }
+        }
+        InorderIterator begin(){
+            return begin_inorder();
+        }
+        InorderIterator end(){
+            return end_inorder();
         }
     };
 }

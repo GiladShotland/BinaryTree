@@ -1,5 +1,3 @@
-#!make -f
-
 CXX=clang++-9 
 CXXVERSION=c++2a
 SOURCE_PATH=sources
@@ -40,8 +38,8 @@ StudentTest3.cpp:  # Asahel Cohen
 tidy:
 	clang-tidy sources/BinaryTree.hpp $(TIDY_FLAGS) --
 
-valgrind: demo
-	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./demo 2>&1 | { egrep "lost| at " || true; }
+valgrind: test1
+	valgrind --tool=memcheck $(VALGRIND_FLAGS) ./test1 2>&1 | { egrep "lost| at " || true; }
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) --compile $< -o $@
